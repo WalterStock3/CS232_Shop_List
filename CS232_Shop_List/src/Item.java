@@ -8,7 +8,7 @@ public abstract class Item {
 	private String itemName;
 
 	public Item() {
-		itemName = "Unused Product Location";
+		itemName = "NoNameYet";
 	}
 
 	public Item(String initName) {
@@ -23,9 +23,7 @@ public abstract class Item {
 		return itemName;
 	}
 	
-	// equals method - covered in chapter 5
-	// equalsName checks name only and is used to prevent list duplicates
-	public boolean equalsName(Item otherItem) {
+	public boolean equals(Item otherItem) {
 		return this.itemName.equalsIgnoreCase(otherItem.itemName);
 	}
 }

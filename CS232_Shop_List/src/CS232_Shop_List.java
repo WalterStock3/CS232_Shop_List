@@ -11,7 +11,7 @@ import java.util.Scanner;
  * @author Walter Stock
  *
  */
-public class CS232Assignment4 {
+public class CS232_Shop_List {
 
 	public static void main(String[] args) {
 		List myList = new List("MyList");
