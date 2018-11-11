@@ -1,8 +1,3 @@
-/CS232Assignment4.class
-/Helper.class
-/Item.class
-/List.class
-/Product.class
-/Purchasable.class
-/CS232_Shop_List.class
-/ReadMe
+/ItemBase.class
+/ListItemBase.class
+/Person.class
