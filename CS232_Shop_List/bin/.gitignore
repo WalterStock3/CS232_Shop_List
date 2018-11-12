@@ -1,3 +1,10 @@
 /ItemBase.class
 /ListItemBase.class
 /Person.class
+/ShoppingListProduct.class
+/ShoppingList.class
+/Interface.class
+/MainInterface.class
+/ApplicationInterface.class
+/FileInterface.class
+/Users.class
