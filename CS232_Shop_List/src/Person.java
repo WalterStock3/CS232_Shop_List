@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 /**
  * Person Class.
  * 
@@ -9,18 +11,17 @@
  * @author Walter Stock
  *
  */
-public class Person {
+public class Person implements Serializable{
 	private String personName;
 	private ShoppingList shoppingList;
+	private ProductList productList;
 
 	public Person() {
 		this.personName = "UnNamedPerson";
-		this.shoppingList = new ShoppingList();
 	}
 
 	public Person(String initName) {
 		this.personName = initName;
-		this.shoppingList = new ShoppingList();
 	}
 
 	public boolean equals(Object otherObject) {
@@ -41,4 +42,19 @@ public class Person {
 		return this.personName;
 	}
 
+	public void newShoppingList() {
+		this.shoppingList = new ShoppingList();
+	}
+	
+	public ShoppingList getShoppingList() {
+		return this.shoppingList;
+	}
+	
+	public void newProductList() {
+		this.productList = new ProductList();
+	}
+
+	public ProductList getProductList() {
+		return this.productList;
+	}
 }

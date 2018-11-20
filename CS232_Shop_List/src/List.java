@@ -13,8 +13,8 @@ public class List {
 	// declaring variables
 	private String listName;
 	private int listLength = 7;// best practice is to assign a constant
-	//private Product[] listItem = new Product[listLength];
-	private Purchasable[] listItem = new Product[listLength];
+	//private ProductOLD[] listItem = new ProductOLD[listLength];
+	private Purchasable[] listItem = new ProductOLD[listLength];
 	
 	// Constructors
 	/**
@@ -28,7 +28,7 @@ public class List {
 		for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 		{
 			// populating all items with defaults
-			listItem[index] = new Product();
+			listItem[index] = new ProductOLD();
 		}
 	}
 
@@ -43,7 +43,7 @@ public class List {
 		for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 		{
 			// populating all items with defaults
-			listItem[index] = new Product();
+			listItem[index] = new ProductOLD();
 		}
 	}
 
@@ -54,7 +54,7 @@ public class List {
 	 * @author Walter Stock
 	 *
 	 */
-	public void setListItem(Product newItem) {
+	public void setListItem(ProductOLD newItem) {
 		int openLocation = -1;
 		openLocation = this.findOpenLocation();
 		this.listItem[openLocation] = newItem;
@@ -66,7 +66,7 @@ public class List {
 	 * @author Walter Stock
 	 *
 	 */
-	public void setListItem(Product newItem, int itemLocation) {
+	public void setListItem(ProductOLD newItem, int itemLocation) {
 		System.out.println("Location is: " + itemLocation);
 		this.listItem[itemLocation] = newItem;
 	}
@@ -91,9 +91,9 @@ public class List {
 	public void addListItem() {
 		// declaring and initializing variables
 		Scanner keyboard = new Scanner(System.in);
-		String itemName = "Unused Product Space";
+		String itemName = "Unused ProductOLD Space";
 		String itemPriority = "-1";
-		Product myItem = new Product();
+		ProductOLD myItem = new ProductOLD();
 		boolean inputOK = true;// used to bypass insert
 
 		System.out.println("Here is your current list.");
@@ -148,7 +148,7 @@ public class List {
 		// declaring and initializing variables
 		Scanner keyboard = new Scanner(System.in);
 		String itemName = "NoNameYet";
-		Product blankItem = new Product();
+		ProductOLD blankItem = new ProductOLD();
 
 		System.out.println("Here is your current list.");
 		this.displayList();
@@ -207,11 +207,11 @@ public class List {
 	public void displayList() {
 		System.out.println("Your List");
 		System.out.println("----------------------------------------------------------------------");
-		System.out.println("Product                              Priority    Price         Purchased");
+		System.out.println("ProductOLD                              Priority    Price         Purchased");
 		System.out.println("------------------------------    --------    ----------    ----------");
 		for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 		{
-			// Product
+			// ProductOLD
 			System.out.print(listItem[index].getItemName());
 			Integer integerObject = listItem[index].getItemPriority();
 			String sp0 = createSpace(41 - listItem[index].getItemName().length() - integerObject.toString().length());
@@ -258,7 +258,7 @@ public class List {
 		int priorityIndex = -1;
 		int sortToIndex = -1;
 		boolean finished = false;
-		Purchasable tempItem = new Product();
+		Purchasable tempItem = new ProductOLD();
 		while (sortToIndex + 1 < listItem.length && !finished) {
 			// get priority item
 			priority = 101;
@@ -288,7 +288,7 @@ public class List {
 	 *
 	 */
 	public void sortListMerge() {
-		Product[] listItemTemp = new Product[listItem.length];
+		ProductOLD[] listItemTemp = new ProductOLD[listItem.length];
 		splitOfMergeSort(0, listItem.length - 1, listItemTemp);
 	}
 
@@ -298,7 +298,7 @@ public class List {
 	 * @author Walter Stock
 	 *
 	 */
-	private void splitOfMergeSort(int startIndex, int endIndex, Product[] listItemTemp) {
+	private void splitOfMergeSort(int startIndex, int endIndex, ProductOLD[] listItemTemp) {
 		//System.out.println("Starting splitOfMergeSort. startIndex is: " + startIndex + " endIndex is: " + endIndex);
 		//only do something if the start index is less than the end index.
 		if (startIndex < endIndex) {
@@ -368,7 +368,7 @@ public class List {
 			for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 			{
 				Double price = 0.0;
-				if (listItem[index].getItemPrice() == -1 && listItem[index].getItemName() != "Unused Product Location") {
+				if (listItem[index].getItemPrice() == -1 && listItem[index].getItemName() != "Unused ProductOLD Location") {
 					price = (Math.random() * 125.0);
 					price = (double) Math.round(price * 100.0);
 					price = price / 100;
@@ -379,7 +379,7 @@ public class List {
 
 			for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 			{
-				if (listItem[index].getItemPrice() != -1 && listItem[index].getItemName() != "Unused Product Location") {
+				if (listItem[index].getItemPrice() != -1 && listItem[index].getItemName() != "Unused ProductOLD Location") {
 					priceTotal = priceTotal + listItem[index].getItemPrice();
 					// System.out.println(priceTotal);
 				}
@@ -403,7 +403,7 @@ public class List {
 		for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 		{
 			if (listItem[index].getItemPrice() != -1 && listItem[index].getItemPrice() < availableDollars
-					&& listItem[index].getItemName() != "Unused Product Location") {
+					&& listItem[index].getItemName() != "Unused ProductOLD Location") {
 				listItem[index].setPurchased(true);
 				availableDollars = availableDollars - listItem[index].getItemPrice();
 			}
@@ -412,11 +412,11 @@ public class List {
 //		this.displayList();
 		System.out.println("These are the items that you purchased:");
 		System.out.println("----------------------------------------------------------------------");
-		System.out.println("Product                              Priority    Price         Purchased");
+		System.out.println("ProductOLD                              Priority    Price         Purchased");
 		System.out.println("------------------------------    --------    ----------    ----------");
 		for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 		{
-			if (listItem[index].getItemPurchased() == true) {// Product
+			if (listItem[index].getItemPurchased() == true) {// ProductOLD
 
 				System.out.print(listItem[index].getItemName());
 				Integer integerObject = listItem[index].getItemPriority();
@@ -455,11 +455,11 @@ public class List {
 		System.out.println();// add a space
 		System.out.println("These are the items that you did not purchase:");
 		System.out.println("----------------------------------------------------------------------");
-		System.out.println("Product                              Priority    Price         Purchased");
+		System.out.println("ProductOLD                              Priority    Price         Purchased");
 		System.out.println("------------------------------    --------    ----------    ----------");
 		for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 		{
-			if (listItem[index].getItemPurchased() == false) {// Product
+			if (listItem[index].getItemPurchased() == false) {// ProductOLD
 
 				System.out.print(listItem[index].getItemName());
 				Integer integerObject = listItem[index].getItemPriority();
@@ -505,13 +505,13 @@ public class List {
 	 *
 	 */
 	public void test() {
-		listItem[0] = new Product("Test Product A", 99);
-		listItem[1] = new Product("Test Product B", 15);
-		listItem[2] = new Product("Test Product C", 11);
-		listItem[3] = new Product("Test Product D", 2);
-		listItem[4] = new Product("Test Product E", 92);
-		listItem[5] = new Product("Test Product F", 44);
-		listItem[6] = new Product("Test Product G", 55);
+		listItem[0] = new ProductOLD("Test ProductOLD A", 99);
+		listItem[1] = new ProductOLD("Test ProductOLD B", 15);
+		listItem[2] = new ProductOLD("Test ProductOLD C", 11);
+		listItem[3] = new ProductOLD("Test ProductOLD D", 2);
+		listItem[4] = new ProductOLD("Test ProductOLD E", 92);
+		listItem[5] = new ProductOLD("Test ProductOLD F", 44);
+		listItem[6] = new ProductOLD("Test ProductOLD G", 55);
 
 	}
 
@@ -525,7 +525,7 @@ public class List {
 		int openLocation = -1;
 		for (int index = 0; index < listItem.length; index++)// written to handle any array length.
 		{
-			if (listItem[index].getItemName() == "Unused Product Location" && openLocation == -1) {
+			if (listItem[index].getItemName() == "Unused ProductOLD Location" && openLocation == -1) {
 				openLocation = index;
 			}
 		}

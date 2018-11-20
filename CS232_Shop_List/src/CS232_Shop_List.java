@@ -1,3 +1,4 @@
+import java.util.Scanner;
 
 //import java.util.Scanner;
 
@@ -11,9 +12,7 @@
 public class CS232_Shop_List {
 
 	public static void main(String[] args) {
-
 		ApplicationInterface applicationInterface = new ApplicationInterface();
 		applicationInterface.startInterface();
-		//applicationInterface.mainInterface();
 	}
 }

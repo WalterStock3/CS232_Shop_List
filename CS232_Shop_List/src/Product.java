@@ -1,82 +1,37 @@
+import java.io.Serializable;
+
 /**
- * Class for products that can be prioritized and purchased and included in a
- * list. This class is a child class of Item.
- * 
  * @author Walter Stock
  *
  */
-public class Product extends Item implements Purchasable {
+public class Product implements Serializable{
 
-	// declaring variables
-	private String itemName;
-	private Integer itemPriority;
-	private Double itemPrice;
-	private Boolean itemPurchased;
+	private String productName = "NoNameYet";
 
-	// Constructors - constructors are covered in chapter 6
-	// constructor 1 - default
-	public Product() {
-		super();
-		// itemName = "Unused Product Location";
-		itemPriority = -1;
-		itemPrice = -1.0;
-		itemPurchased = false;
+	public Product(String productName) {
+		this.productName = productName;
 	}
 
-	// constructor 2 - name only
-	public Product(String initName) {
-		super(initName);
-		itemPriority = -1;
-		itemPrice = -1.0;
-		itemPurchased = false;
+	public String getProductName() {
+		return this.productName;
 	}
 
-	// constructor 3 - name and priority
-	public Product(String initName, int initPriority) {
-		super(initName);
-		itemPriority = initPriority;
-		itemPrice = -1.0;
-		itemPurchased = false;
+	public boolean equals(Object otherObject) {
+		/**
+		 * Well designed equals method that overrides Java's base object's equals method
+		 * and checks that the passed object is a ShoppingList.
+		 * 
+		 */
+		boolean isEqual = false;
+		if ((otherObject != null) && (otherObject instanceof Product)) {
+			Product otherProduct = (Product) otherObject;
+			isEqual = this.productName == otherProduct.getProductName();
+
+		}
+		return isEqual;
 	}
 
-	// setters
-	public void setItemName(String newName) {
-		super.setItemName(newName);
+	public String toString() {
+		return "productName: " + this.productName;
 	}
-
-	public void setItemPriority(int newPriority) {
-		itemPriority = newPriority;
-	}
-
-	public void setItemPrice(double newPrice) {
-		itemPrice = newPrice;
-	}
-
-	public void setPurchased(boolean newPurchased) {
-		itemPurchased = newPurchased;
-	}
-
-	// getters
-	public String getItemName() {
-		return super.getItemName();
-	}
-
-	public int getItemPriority() {
-		return itemPriority;
-	}
-
-	public double getItemPrice() {
-		return itemPrice;
-	}
-
-	public boolean getItemPurchased() {
-		return itemPurchased;
-	}
-
-	// equals method - covered in chapter 5
-	// equalsName checks name only and is used to prevent list duplicates
-	public boolean equalsName(Item otherItem) {
-		return this.equalsName(otherItem);
-	}
-
 }
