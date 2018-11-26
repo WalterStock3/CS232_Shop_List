@@ -6,19 +6,57 @@ import java.io.Serializable;
  * @author Walter Stock
  *
  */
-public class ShoppingListProduct implements Serializable {
-	private int key = -1;
+public class ShoppingListProduct extends ListItemBase implements Purchasable, Serializable {
+	private int listItemID = -1;
 	private Product product;
 	private int quantity = -1;
+	private String units = "NoUnitsYet";
 	private int priority = -1;
 	private double price = -1.0;
+	private boolean purchasedNow = false;
 	private boolean purchased = false;
 
-	public ShoppingListProduct(int key, Product product, int quantity, int priority) {
-		this.key = key;
+	// constructors
+	public ShoppingListProduct(Product product, int quantity, String units, int priority) {
+		this.setListItemID();
 		this.product = product;
 		this.quantity = quantity;
+		this.units = units;
 		this.priority = priority;
+	}
+
+	// setters
+	public void setListItemID() {
+		super.setListItemID();
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public void setPurchasedNow(boolean purchasedNow) {
+		this.purchasedNow = purchasedNow;
+	}
+
+	public void setPurchased(boolean purchased) {
+		this.purchased = purchased;
+	}
+
+	// getters
+	public int getListItemID() {
+		return super.getListItemID();
 	}
 
 	public Product getProduct() {
@@ -37,18 +75,15 @@ public class ShoppingListProduct implements Serializable {
 		return this.price;
 	}
 
+	public boolean getPurchasedNow() {
+		return this.purchasedNow;
+	}
+
 	public boolean getPurchased() {
 		return this.purchased;
 	}
 
-	public void setPriority(int priority) {
-		this.priority = priority;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
+	// additional methods
 	public boolean equals(Object otherObject) {
 		/**
 		 * Well designed equals method that overrides Java's base object's equals method
@@ -72,8 +107,8 @@ public class ShoppingListProduct implements Serializable {
 	}
 
 	public String toString() {
-		return "key: " + key + "\n" + "Product: " + this.product.getProductName() + "\n" + "quantity: " + this.quantity
-				+ "\n" + "priority: " + this.priority + "\n" + "price: " + this.price + "\n";
+		return "Product: " + this.product.getProductName() + "\n" + "quantity: " + this.quantity + "\n" + "priority: "
+				+ this.priority + "\n" + "price: " + this.price + "\n";
 	}
 
 }

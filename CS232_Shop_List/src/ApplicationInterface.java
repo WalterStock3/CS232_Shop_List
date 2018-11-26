@@ -24,9 +24,9 @@ public class ApplicationInterface {
 		Scanner keyboard = new Scanner(System.in);
 		String inputValue = new String();
 
-		// UserList userList = new UserList();
+		UserList userList = new UserList();
 
-		UserList userList = startInterfaceLoadUsers();
+		// UserList userList = startInterfaceLoadUsers();
 
 		System.out.println("Application loaded with " + userList.getUserList().size() + " existing user records. \n");
 
@@ -34,6 +34,7 @@ public class ApplicationInterface {
 			System.out.println("Welcome to Shopping List enter one of the following:");
 			System.out.println("N - to setup a new user");
 			System.out.println("O - to open an existing user");
+			// System.out.println("D - to delete a user");
 			System.out.println("X - to exit the application");
 			System.out.println("T - to turn on testing");
 
@@ -97,7 +98,10 @@ public class ApplicationInterface {
 			inputStream = new ObjectInputStream(new FileInputStream(fileName));
 		} catch (IOException e) {
 			System.out.println("Error opening input file " + fileName);
-			System.exit(0);
+			System.out.println("A new ShoppingList file will be created.");
+			UserList userList = new UserList();
+			return userList;
+			// System.exit(0);
 		}
 		UserList userList = null;
 		try {
@@ -115,15 +119,34 @@ public class ApplicationInterface {
 		String inputName = new String();
 
 		System.out.println("Enter your name:");
-		inputName = keyboard.nextLine();
+		try {
+			inputName = keyboard.nextLine();
+			for (int i = 0; i < inputName.length(); i++) {
+				String inputNameChar = inputName.substring(i, i + 1);
 
-		// each user has a shopping list and product list
-		Person user = new Person(inputName);
-		userList.addUser(user);
-		user.newShoppingList();
-		user.newProductList();
+//				System.out.println("The character to check: " + checkChar);
 
-		shoppingListInterface(user);
+				if (inputNameChar.matches("[1-9]")) {
+					throw new ExceptionNumericNotAllowed("Numbers are not allowed in names.\n");
+				}
+
+				// each user has a shopping list and product list
+
+			}
+			Person user = new Person(inputName);
+			userList.addUser(user);
+			shoppingListInterface(user);
+
+		} catch (ExceptionNumericNotAllowed e) {
+			System.out.println(e.getMessage());
+			startInterface();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			System.out.println("Try again.\n");
+			startInterface();
+		}
+
 	}
 
 	public void startInterfaceOpenUser(UserList userList) {
@@ -190,6 +213,7 @@ public class ApplicationInterface {
 			System.out.println("D - to display your list");
 			System.out.println("P - to get prices");
 			System.out.println("S - to go shopping");
+			System.out.println("SV - to save your list to a text file.");
 			System.out.println("T - to test");
 			System.out.println("X - to exit this list");
 
@@ -214,7 +238,7 @@ public class ApplicationInterface {
 				break;
 
 			case "D":// display list
-				shoppingListInterfaceDisplayList(user);
+				shoppingListInterfaceDisplayList(user, false);
 				break;
 
 			case "P":// get prices
@@ -224,6 +248,9 @@ public class ApplicationInterface {
 			case "S":// go shopping
 				shoppingListInterfaceGoShopping(user);
 				break;
+
+			case "SV":// save to text
+				shoppingListInterfaceSaveText(user);
 
 			case "T":// test
 				shoppingListInterfaceTestInterface();
@@ -235,6 +262,7 @@ public class ApplicationInterface {
 			// break;
 
 			case "X":// exit
+				System.out.println("Exiting");
 				break;
 			default:
 				System.out.println();
@@ -248,6 +276,7 @@ public class ApplicationInterface {
 		String inputValue = new String();
 		String itemName = "NoNameYet";
 		int itemQuantity = -1;
+		String units = "NoUnitsYet";
 		int itemPriority = -1;
 
 		System.out.println("Enter the item's name:");
@@ -256,17 +285,21 @@ public class ApplicationInterface {
 		System.out.println("Enter the quantity:");
 		itemQuantity = keyboard.nextInt();
 
+		System.out.println("Enter the units of the quanity:");
+		keyboard.nextLine();
+		units = keyboard.nextLine();
+
 		System.out.println("Enter the priority:");
 		itemPriority = keyboard.nextInt();
 
 		Product product = new Product(itemName);
 		user.getProductList().addProduct(product);
 
-		user.getShoppingList().addItem(product, itemQuantity, itemPriority);
+		user.getShoppingList().addItem(product, itemQuantity, units, itemPriority);
 
 		if (Tester.testing == "Y") {
 			System.out.println("\n TESTING - Size of the shopping list array after adding item: "
-					+ user.getShoppingList().getShoppingList().size() + "\n");
+					+ user.getShoppingList().getShoppingListArray().size() + "\n");
 		}
 	}
 
@@ -310,7 +343,7 @@ public class ApplicationInterface {
 		// System.out.println("The item's priority has been updated.");
 	}
 
-	public void shoppingListInterfaceDisplayList(Person user) {
+	public void shoppingListInterfaceDisplayList(Person user, Boolean showPurchased) {
 
 		ShoppingList shoppingList = user.getShoppingList();
 		ShoppingListProduct shoppingListProduct;
@@ -331,52 +364,44 @@ public class ApplicationInterface {
 		System.out.println("------------------------------    --------    --------    ----------    ----------");
 
 		if (Tester.testing == "Y") {
-			System.out.println(
-					"\n TESTING - shopping list array size: " + user.getShoppingList().getShoppingList().size() + "\n");
+			System.out.println("\n TESTING - shopping list array size: "
+					+ user.getShoppingList().getShoppingListArray().size() + "\n");
 		}
 
-		for (int index = 0; index < shoppingList.getShoppingList().size(); index++) {
+		for (int index = 0; index < shoppingList.getShoppingListArray().size(); index++) {
 
-			shoppingListProduct = (ShoppingListProduct) shoppingList.getShoppingList().get(index);
+			shoppingListProduct = (ShoppingListProduct) shoppingList.getShoppingListArray().get(index);
 
-			product = " " + shoppingListProduct.getProduct().getProductName();
-			quantity = Integer.toString(shoppingListProduct.getQuantity());
-			priority = Integer.toString(shoppingListProduct.getPriority());
-			price = DollarFormat.returnString(shoppingListProduct.getPrice());
+			if (shoppingListProduct.getPurchased() == false || showPurchased == true) {
 
-			// spaces are dependent on items populated above
-			// when left justified include the size of the item in the previous space
-			// when right justified include the size of the item in the following space
-			space1 = createSpace(41 - product.length() - quantity.length()); // quantity is left justified
-			space2 = createSpace(12 - priority.length()); // priority is left justified
-			space3 = createSpace(14 - price.length());
+				product = " " + shoppingListProduct.getProduct().getProductName();
+				quantity = Integer.toString(shoppingListProduct.getQuantity());
+				priority = Integer.toString(shoppingListProduct.getPriority());
+				if (shoppingListProduct.getPrice() > 0.0) {
+					price = DollarFormat.returnString(shoppingListProduct.getPrice());
+				} else {
+					price = "";
+				}
+				if (shoppingListProduct.getPurchased())
+					purchased = "Yes";
+				else
+					purchased = "No";
 
-			System.out.println(product + space1 + quantity + space2 + priority + space3 + price + space4 + purchased);
+				// spaces are dependent on items populated above
+				// when left justified include the size of the item in the previous space
+				// when right justified include the size of the item in the following space
+				space1 = createSpace(41 - product.length() - quantity.length()); // quantity is left justified
+				space2 = createSpace(12 - priority.length()); // priority is left justified
+				space3 = createSpace(14 - price.length());
+				space4 = createSpace(13 - purchased.length());
 
+				System.out
+						.println(product + space1 + quantity + space2 + priority + space3 + price + space4 + purchased);
+
+			}
 		}
-		System.out.println();/**
-								 * for (int index = 0; index < listItem.length; index++)// written to handle any
-								 * array length. { // ProductOLD
-								 * System.out.print(listItem[index].getItemName()); Integer integerObject =
-								 * listItem[index].getItemPriority(); String sp0 = createSpace(41 -
-								 * listItem[index].getItemName().length() - integerObject.toString().length());
-								 * System.out.print(sp0);
-								 * 
-								 * // Priority int spaceAfterPriority = 0; if (listItem[index].getItemPriority()
-								 * == -1) { System.out.print(""); spaceAfterPriority = 2; } else {
-								 * System.out.print(listItem[index].getItemPriority()); Double doubleObject =
-								 * listItem[index].getItemPrice(); spaceAfterPriority =
-								 * doubleObject.toString().length(); } String sp1 = createSpace(14 -
-								 * spaceAfterPriority); System.out.print(sp1);
-								 * 
-								 * // Price int spaceAfterPrice = 0; if (listItem[index].getItemPrice() == -1) {
-								 * System.out.print(""); spaceAfterPrice = 12; } else {
-								 * System.out.print(listItem[index].getItemPrice()); spaceAfterPrice = 8; }
-								 * String sp3 = createSpace(spaceAfterPrice); System.out.print(sp3);
-								 * System.out.println(listItem[index].getItemPurchased()); }
-								 * System.out.println();// add a space }
-								 * 
-								 */
+		System.out.println();
+
 	}
 
 	public void shoppingListInterfaceSort(Person user) {
@@ -390,8 +415,9 @@ public class ApplicationInterface {
 	public void shoppingListInterfaceSetPrices(Person user) {
 		Double priceTotal = 0.0;
 		while (priceTotal < 100) {
-			for (int index = 0; index < user.getShoppingList().getShoppingList().size(); index++) {
-				ShoppingListProduct product = (ShoppingListProduct) user.getShoppingList().getShoppingList().get(index);
+			for (int index = 0; index < user.getShoppingList().getShoppingListArray().size(); index++) {
+				ShoppingListProduct product = (ShoppingListProduct) user.getShoppingList().getShoppingListArray()
+						.get(index);
 				double price = product.getPrice();
 				if (price == -1.0) {
 					price = (Math.random() * 12500);
@@ -399,8 +425,9 @@ public class ApplicationInterface {
 					product.setPrice(price);
 				}
 			}
-			for (int index = 0; index < user.getShoppingList().getShoppingList().size(); index++) {
-				ShoppingListProduct product = (ShoppingListProduct) user.getShoppingList().getShoppingList().get(index);
+			for (int index = 0; index < user.getShoppingList().getShoppingListArray().size(); index++) {
+				ShoppingListProduct product = (ShoppingListProduct) user.getShoppingList().getShoppingListArray()
+						.get(index);
 				double price = product.getPrice();
 				if (price != -1.0) {
 					priceTotal = priceTotal + product.getPrice();
@@ -413,16 +440,118 @@ public class ApplicationInterface {
 
 	public void shoppingListInterfaceGoShopping(Person user) {
 		Scanner keyboard = new Scanner(System.in);
-		Double budget = 0.0;
+		Double bankAccount = 0.0;
 
 		System.out.println("Enter your budget:");
 
 		try {
-			budget = keyboard.nextDouble();
+			bankAccount = keyboard.nextDouble();
+			if (bankAccount < 0) {
+				throw new ExceptionNegativeNotAllowed("Negative budget is not allowed.  Please try again.\n");
+			}
+		} catch (ExceptionNegativeNotAllowed e) {
+			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			System.out.println("Try again.");
+			System.out.println("Try again.\n");
 		}
+
+		System.out.println("\nSorting and getting prices for any unpriced products.\n");
+		shoppingListInterfaceSort(user);
+		shoppingListInterfaceSetPrices(user);
+		System.out.println("These are the items that you can purchase.");
+
+		//Partial Fill algorithm
+		//Check for identical priority
+		//buy one and then two and so on for both, if possible.
+		//split out the remainder
+		for (int index = 0; index < user.getShoppingList().getShoppingListArray().size(); index++) {
+
+			ShoppingListProduct shoppingListProduct = (ShoppingListProduct) user.getShoppingList()
+					.getShoppingListArray().get(index);
+
+			if (shoppingListProduct.getPurchased() != true
+					&& shoppingListProduct.getPrice() * shoppingListProduct.getQuantity() <= bankAccount) {
+				bankAccount = bankAccount - (shoppingListProduct.getPrice() * shoppingListProduct.getQuantity());
+				shoppingListProduct.setPurchased(true);
+
+			}
+		}
+		this.shoppingListInterfaceDisplayList(user, true);
+
+	}
+
+	public void shoppingListInterfaceSaveText(Person user) {
+		PrintWriter outputStream = null;
+		String fileName = user.getPersonName() + ".txt";
+
+		ShoppingList shoppingList = user.getShoppingList();
+		ShoppingListProduct shoppingListProduct;
+
+		String product = "";
+		String space1 = "";
+		String quantity = "";
+		String space2 = "";
+		String priority = "";
+		String space3 = "";
+		String price = "";
+		String space4 = "";
+		String purchased = "";
+
+		try {
+			outputStream = new PrintWriter(fileName);
+		} catch (IOException e) {// FileNotFoundException e) {
+			System.out.println("Error opening output file :" + fileName);
+			System.exit(0);
+		}
+
+		try {
+			outputStream.println("\nYour List");
+			outputStream.println("----------------------------------------------------------------------------------");
+			outputStream.println("Product                           Quantity    Priority    Price         Purchased");
+			outputStream.println("------------------------------    --------    --------    ----------    ----------");
+
+			if (Tester.testing == "Y") {
+				System.out.println("\n TESTING - shopping list array size: "
+						+ user.getShoppingList().getShoppingListArray().size() + "\n");
+			}
+
+			for (int index = 0; index < shoppingList.getShoppingListArray().size(); index++) {
+
+				shoppingListProduct = (ShoppingListProduct) shoppingList.getShoppingListArray().get(index);
+
+				product = " " + shoppingListProduct.getProduct().getProductName();
+				quantity = Integer.toString(shoppingListProduct.getQuantity());
+				priority = Integer.toString(shoppingListProduct.getPriority());
+				if (shoppingListProduct.getPrice() > 0.0) {
+					price = DollarFormat.returnString(shoppingListProduct.getPrice());
+				} else {
+					price = "";
+				}
+				if (shoppingListProduct.getPurchased())
+					purchased = "Yes";
+				else
+					purchased = "No";
+
+				// spaces are dependent on items populated above
+				// when left justified include the size of the item in the previous space
+				// when right justified include the size of the item in the following space
+				space1 = createSpace(41 - product.length() - quantity.length()); // quantity is left justified
+				space2 = createSpace(12 - priority.length()); // priority is left justified
+				space3 = createSpace(14 - price.length());
+				space4 = createSpace(13 - purchased.length());
+
+				outputStream
+						.println(product + space1 + quantity + space2 + priority + space3 + price + space4 + purchased);
+
+			}
+
+			System.out.println(fileName + " saved successfully.\n");
+		} catch (Exception e) {
+			System.out.println("Error writing to file :" + fileName);
+		}
+
+		outputStream.close();
 
 	}
 
@@ -444,7 +573,7 @@ public class ApplicationInterface {
 				break;
 			case "OFF":
 				Tester.testing = "N";
-				System.out.println("Testing mode is turned on.");
+				System.out.println("Testing mode is turned off.");
 				break;
 			default:
 				System.out.println();

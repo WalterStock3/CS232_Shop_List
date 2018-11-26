@@ -17,12 +17,17 @@
 
 public abstract class ListItemBase {
 
-	private int listItemID;
+	private int listItemID = -1;
 
-	public abstract boolean equals();
+	public abstract boolean equals(Object otherObject);
 
-	public void setListItemID(int newID) {
-		listItemID = newID;
+	public void setListItemID() {
+		if (this.listItemID == -1) {
+			this.listItemID = Semaphore.getListItemID();
+		}
+		else {
+			System.out.println("Changing a ListItem ID is now allowed.");
+		}
 	}
 
 	public int getListItemID() {

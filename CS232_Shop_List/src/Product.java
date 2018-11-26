@@ -4,16 +4,22 @@ import java.io.Serializable;
  * @author Walter Stock
  *
  */
-public class Product implements Serializable{
+public class Product extends ItemBase implements Serializable {
 
-	private String productName = "NoNameYet";
-
-	public Product(String productName) {
-		this.productName = productName;
+	// constructors
+	public Product() {
+		super.setItemID();
+		super.setItemName("UnNamedProduct");
 	}
 
+	public Product(String productName) {
+		super.setItemID();
+		super.setItemName(productName);
+	}
+
+	// getters
 	public String getProductName() {
-		return this.productName;
+		return super.getItemName();
 	}
 
 	public boolean equals(Object otherObject) {
@@ -25,13 +31,13 @@ public class Product implements Serializable{
 		boolean isEqual = false;
 		if ((otherObject != null) && (otherObject instanceof Product)) {
 			Product otherProduct = (Product) otherObject;
-			isEqual = this.productName == otherProduct.getProductName();
-
+			isEqual = super.getItemName() == otherProduct.getItemName();
 		}
 		return isEqual;
 	}
 
 	public String toString() {
-		return "productName: " + this.productName;
+
+		return "productName: " + super.getItemName();
 	}
 }

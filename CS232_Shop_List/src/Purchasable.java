@@ -8,36 +8,18 @@
  */
 public interface Purchasable {
 
-//	public void setItemPrice(double newPrice);
-
-//	public void setPurchased(boolean newPurchased);
-
-//	public double getItemPrice();
-
-//	public boolean getItemPurchased();
-
 	// setters
-	public void setItemName(String newName);
+	public void setPriority(int newPriority);
 
-	public void setItemPriority(int newPriority);
-
-	public void setItemPrice(double newPrice);
+	public void setPrice(double newPrice);
 
 	public void setPurchased(boolean newPurchased);
 
 	// getters
-	public String getItemName();
+	public int getPriority();
 
-	public int getItemPriority();
+	public double getPrice();
 
-	public double getItemPrice();
-
-	public boolean getItemPurchased();
-
-	// equals method - covered in chapter 5
-	// equalsName checks name only and is used to prevent list duplicates
-//	public boolean equalsName(Item otherItem) {
-//		return this.equalsName(otherItem);
-//	}
+	public boolean getPurchased();
 
 }

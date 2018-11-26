@@ -13,10 +13,12 @@ public class ProductList implements Serializable{
 	// declaring variables
 	private ArrayList<Product> productList;
 
+	//constructor
 	public ProductList() {
 		productList = new ArrayList<Product>(20);
 	}
 
+	//getters
 	public ArrayList getProductList() {
 		return this.productList;
 	}
@@ -37,7 +39,4 @@ public class ProductList implements Serializable{
 		productList.add(product);
 	}
 	
-	public void printoutinfo(String info) {
-		System.out.println(info);
-	}
 }

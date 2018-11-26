@@ -27,7 +27,7 @@ public class MergeSort {
 			System.out.println("\n TESTING - in MergeSort sort for ShoppingList object\n");
 		}
 
-		shoppingList.setShoppingList(sort(shoppingList.getShoppingList()));
+		shoppingList.setShoppingListArray(sort(shoppingList.getShoppingListArray()));
 	}
 
 	// Overridden for ShoppingList

@@ -18,10 +18,14 @@ public class Person implements Serializable{
 
 	public Person() {
 		this.personName = "UnNamedPerson";
+		this.newShoppingList();
+		this.newProductList();
 	}
 
 	public Person(String initName) {
 		this.personName = initName;
+		this.newShoppingList();
+		this.newProductList();
 	}
 
 	public boolean equals(Object otherObject) {
