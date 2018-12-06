@@ -31,7 +31,7 @@ public class ShoppingList extends ListBase implements Serializable {
 	public void setShoppingListArray(ArrayList<ShoppingListProduct> newShoppingListArray) {
 		shoppingListArray = newShoppingListArray;
 	}
-	
+
 	// getters
 	public int getListID() {
 		return super.getListID();
@@ -56,6 +56,10 @@ public class ShoppingList extends ListBase implements Serializable {
 		}
 
 		return isEqual;
+	}
+
+	public void addItem(ShoppingListProduct shoppingListProduct) {
+		this.shoppingListArray.add(shoppingListProduct);
 	}
 
 	public void addItem(Product product, int itemQuantity, String units, int itemPriority) {

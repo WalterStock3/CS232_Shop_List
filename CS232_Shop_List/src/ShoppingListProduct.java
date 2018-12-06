@@ -67,6 +67,10 @@ public class ShoppingListProduct extends ListItemBase implements Purchasable, Se
 		return this.quantity;
 	}
 
+	public String getUnits() {
+		return this.units;
+	}
+
 	public int getPriority() {
 		return this.priority;
 	}

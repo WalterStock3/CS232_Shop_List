@@ -128,7 +128,7 @@ public class MergeSort {
 		while (firstHalfIndex < firstHalfLength) {
 			a.set(aIndex, firstHalf.get(firstHalfIndex));
 			if (Tester.testing == "Y") {
-				System.out.println("TESTING - first half priority: " + firstHalf.get(firstHalfIndex).getPriority());
+				System.out.println("TESTING - first half priority: ");// + firstHalf.get(firstHalfIndex).getPriority());
 			}
 			aIndex++;
 			firstHalfIndex++;
@@ -136,7 +136,7 @@ public class MergeSort {
 		while (lastHalfIndex < lastHalfLength) {
 			a.set(aIndex, lastHalf.get(lastHalfIndex));
 			if (Tester.testing == "Y") {
-				System.out.println("TESTING - second half priority: " + lastHalf.get(firstHalfIndex).getPriority());
+				System.out.println("TESTING - second half priority: ");// + lastHalf.get(firstHalfIndex).getPriority());
 			}
 			aIndex++;
 			lastHalfIndex++;

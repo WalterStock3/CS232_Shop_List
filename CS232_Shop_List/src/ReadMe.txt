@@ -64,6 +64,7 @@ Demonstrated design, problem solving and programming concepts:
 
 ToDo
 Add Partial Fill
+Start removing purchased items b/c they break partial fill
 Add ability to delete a product from product list.
 Make is so that you can delete a user.
 Make it so that you cannot add a duplicate user.
