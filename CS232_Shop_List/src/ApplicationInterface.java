@@ -179,10 +179,6 @@ public class ApplicationInterface {
 			System.out.println("Enter user name or X to exit Open User:");
 			inputName = keyboard.nextLine();
 
-			if (Tester.testing == "Y") {
-				System.out.println(
-						"\n TESTING - User location returned from user list: " + userList.getUserLocation(inputName));
-			}
 			if (userList.getUserLocation(inputName) >= 0) {
 				found = true;
 				user = userList.getUser(userList.getUserLocation(inputName));
@@ -227,7 +223,7 @@ public class ApplicationInterface {
 			System.out.println("T - to test");
 			System.out.println("X - to exit this list");
 
-			inputValue = keyboard.nextLine();
+inputValue = keyboard.nextLine();
 
 			switch (inputValue.toUpperCase()) {
 
@@ -248,7 +244,7 @@ public class ApplicationInterface {
 				break;
 
 			case "D":// display list
-				shoppingListInterfaceDisplayList(user, false);
+				shoppingListInterfaceDisplayList(user, true);
 				break;
 
 			case "P":// get prices
@@ -290,10 +286,13 @@ public class ApplicationInterface {
 		int itemPriority = -1;
 
 		System.out.println("Enter the item's name:");
-		itemName = keyboard.nextLine();
+		if (keyboard.hasNextLine()) {
+			itemName = keyboard.nextLine();
+		}
 
 		System.out.println("Enter the quantity:");
-		itemQuantity = keyboard.nextInt();
+		itemQuantity = HelperConsoleInput.getConsoleInt(keyboard);
+		// itemQuantity = keyboard.nextInt();
 
 		System.out.println("Enter the units of the quanity:");
 		keyboard.nextLine();
@@ -307,10 +306,6 @@ public class ApplicationInterface {
 
 		user.getShoppingList().addItem(product, itemQuantity, units, itemPriority);
 
-		if (Tester.testing == "Y") {
-			System.out.println("\n TESTING - Size of the shopping list array after adding item: "
-					+ user.getShoppingList().getShoppingListArray().size() + "\n");
-		}
 	}
 
 	public void shoppingListInterfaceRemoveItem(Person user) {
@@ -373,11 +368,6 @@ public class ApplicationInterface {
 		System.out.println("Product                           Quantity    Priority    Price         Purchased");
 		System.out.println("------------------------------    --------    --------    ----------    ----------");
 
-		if (Tester.testing == "Y") {
-			System.out.println("\n TESTING - shopping list array size: "
-					+ user.getShoppingList().getShoppingListArray().size() + "\n");
-		}
-
 		for (int index = 0; index < shoppingList.getShoppingListArray().size(); index++) {
 
 			shoppingListProduct = (ShoppingListProduct) shoppingList.getShoppingListArray().get(index);
@@ -388,7 +378,7 @@ public class ApplicationInterface {
 				quantity = Integer.toString(shoppingListProduct.getQuantity());
 				priority = Integer.toString(shoppingListProduct.getPriority());
 				if (shoppingListProduct.getPrice() > 0.0) {
-					price = DollarFormat.returnString(shoppingListProduct.getPrice());
+					price = HelperDollarFormat.returnString(shoppingListProduct.getPrice());
 				} else {
 					price = "";
 				}
@@ -415,9 +405,7 @@ public class ApplicationInterface {
 	}
 
 	public void shoppingListInterfaceSort(Person user) {
-		if (Tester.testing == "Y") {
-			System.out.println("\n TESTING - about to enter MergeSort\n");
-		}
+
 		MergeSort.sort(user.getShoppingList());
 
 	}
@@ -470,199 +458,43 @@ public class ApplicationInterface {
 			System.out.println("Try again.\n");
 		}
 
+		// Step 1 - Sorting and Getting Prices for any unpriced list items
 		System.out.println("\nSorting and getting prices for any unpriced products.\n");
 		shoppingListInterfaceSort(user);
 		shoppingListInterfaceSetPrices(user);
-		System.out.println("These are the items that you can purchase.");
 
-		// ArrayList 1 - Start Quantity
-		// ArrayList 2 - Current Quantity
-		// ArrayList 3 - Price
 		int i = 0;
+		int origShoppingListSize = user.getShoppingList().getShoppingListArray().size();
+		// Main Shopping List Loop
 		do {
-			// Start working through the list to find same priority and see what you can buy
-			if (Tester.testing == "Y") {
-				System.out.println("TESTING - starting through list, index: " + i);
-			}
-			ShoppingListProduct tempShoppingListProduct = (ShoppingListProduct) user.getShoppingList()
-					.getShoppingListArray().get(i);
-			startQuantity.add(tempShoppingListProduct.getQuantity());
-			currentQuantity.add(tempShoppingListProduct.getQuantity());
-			price.add(tempShoppingListProduct.getPrice());
+			// Step 2 - Top Priority Group
+			i = getTopPriorityGroup(user, i, startQuantity, currentQuantity, price);
 
-			if (Tester.testing == "Y") {
-				System.out.println("TESTING - currentQuantity items: " + currentQuantity);
-				System.out.println("TESTING - process is set to: " + process);
-			}
+			// Step 3 - Purchase Algo
+			purchaseListItems(bankAccount, user, i, startQuantity, currentQuantity, price);
 
-			// if you are at the end of the list then process
-			if (i == user.getShoppingList().getShoppingListArray().size() - 1) {
-				if (Tester.testing == "Y") {
-					System.out.println("TESTING - at the end of the list - process");
-				}
-				process = true;
-			}
-			// if you are not at the end check next priority != current then process
-			else {
-				ShoppingListProduct nextSLP = (ShoppingListProduct) user.getShoppingList().getShoppingListArray()
-						.get(i + 1);
-				if (nextSLP.getPriority() != tempShoppingListProduct.getPriority()) {
-					if (Tester.testing == "Y") {
-						System.out.println("TESTING - next item is a different priority so process.");
-					}
-					process = true;
-				}
-			}
-			if (process == true) {
-				if (Tester.testing == "Y") {
-					System.out.println("TESTING - process is true - starting to process.");
-				}
-				// 1. figure out what you are buying
-				boolean purchased = false;
-				do {
-					// keep on doing this until nothing is purchased after checking all items
-					purchased = false;
-					for (int i2 = 0; i2 < startQuantity.size(); i2++) {
-						if (Tester.testing == "Y") {
-							System.out.println("TESTING - check to buy item: " + i2);
-							System.out.println("Current quantities: " + currentQuantity);
-							System.out.println("Current Bank Accout: " + bankAccount);
-							System.out.println("Prices: " + price);
-						}
-						if (price.get(i2) <= bankAccount && currentQuantity.get(i2) > 0) {
-							// buy one
-							if (Tester.testing == "Y") {
-								System.out.println("TESTING - about to make a pucahse of: " + i2);
-								System.out.println("Current quantities: " + currentQuantity.get(i2));
-								System.out.println("Current Bank Accout: " + bankAccount);
-								System.out.println("Prices: " + price.get(i2));
-							}
-							currentQuantity.set(i2, currentQuantity.get(i2) - 1);
-							bankAccount = bankAccount - price.get(i2);
-							purchased = true;
-						}
-						if (Tester.testing == "Y") {
-							System.out.println("TESTING - purchased equals: " + purchased);
-						}
-					}
-				} while (purchased == true);
-				// 2. update the shopping list for what you purchased
-				for (int i3 = 0; i3 < startQuantity.size(); i3++) {
-					if (Tester.testing == "Y") {
-						System.out.println("TESTING - beginning to update shoppingList");
-						System.out.println("TESTING - i3 is: " + i3);
-						System.out.println("TESTING - startQuanity size is: " + startQuantity.size());
-					}
-					if (currentQuantity.get(i3) == 0) {
-						// everything was purchased
-						tempShoppingListProduct = (ShoppingListProduct) user.getShoppingList().getShoppingListArray()
-								.get(i + i3 - startQuantity.size() + 1);
-						tempShoppingListProduct.setPurchased(true);
-					} else if (currentQuantity.get(i3) == startQuantity.get(i3)) {
-						// nothing was purchased
-					} else {
-						if (Tester.testing == "Y") {
-							System.out.println("TESTING - partial filling item: "+i+i3+startQuantity.size()+1);
-						}
-						// partial - split out remainder and update list for purchased piece
-						tempShoppingListProduct = (ShoppingListProduct) user.getShoppingList().getShoppingListArray()
-								.get(i + i3 - startQuantity.size() + 1);
-						// 1. split out the unpurchased piece
-						user.getShoppingList().addItem(tempShoppingListProduct.getProduct(), currentQuantity.get(i3),
-								tempShoppingListProduct.getUnits(), tempShoppingListProduct.getPriority());
-						// 2. update the purchased piece
-						tempShoppingListProduct.setQuantity(startQuantity.get(i3) - currentQuantity.get(i3));
-						tempShoppingListProduct.setPurchased(true);
-					}
-				}
-			}
+			// Step 4 - Update Shopping List
+			updateShoppingList(user, i, startQuantity, currentQuantity);
+
 			i++;
-			if (Tester.testing == "Y") {
-				System.out.println("TESTING - finished with round and i pdated to: " + i);
-				System.out.println(
-						"TESTING - shopping list length is: " + user.getShoppingList().getShoppingListArray().size());
+
+		} while (i < origShoppingListSize);
+
+		// Step 5 - Display Results
+		System.out.println("Here is your list updated with what was purchased.");
+		shoppingListInterfaceDisplayList(user, true);
+
+		// Step 6 - Remove Purchased
+		int listSize = user.getShoppingList().getShoppingListArray().size();
+		int removedCount = 0;
+		for (int i4 = 0; i4 < listSize; i4++) {
+			ShoppingListProduct tempShoppingListProduct = (ShoppingListProduct) user.getShoppingList()
+					.getShoppingListArray().get(i4-removedCount);
+			if (tempShoppingListProduct.getPurchased() == true) {
+				user.getShoppingList().getShoppingListArray().remove(i4-removedCount);
+				removedCount++;
 			}
-
-		} while (i < user.getShoppingList().getShoppingListArray().size());
-
-		// Partial Fill algorithm
-		// Check for identical priority
-		// buy one and then two and so on for both, if possible.
-		// split out the remainder
-		/**
-		 * OLD Approach
-		 * 
-		 * for (int index = 0; index <
-		 * user.getShoppingList().getShoppingListArray().size(); index++) {
-		 * 
-		 * ShoppingListProduct shoppingListProduct = (ShoppingListProduct)
-		 * user.getShoppingList() .getShoppingListArray().get(index);
-		 * 
-		 * if (shoppingListProduct.getPurchased() != true &&
-		 * shoppingListProduct.getPrice() * shoppingListProduct.getQuantity() <=
-		 * bankAccount) { bankAccount = bankAccount - (shoppingListProduct.getPrice() *
-		 * shoppingListProduct.getQuantity()); shoppingListProduct.setPurchased(true);
-		 * 
-		 * } }
-		 */
-		/**
-		 * int i = 0; int lastPriority = -1; int currentPriority = -1; boolean
-		 * updateMade = false; int newQuantity = -1; ShoppingList
-		 * priorityEqualShoppingList = new ShoppingList(); // do this until you reach
-		 * the end of the list do { ShoppingListProduct originalShoppingListProduct =
-		 * (ShoppingListProduct) user.getShoppingList() .getShoppingListArray().get(i);
-		 * currentPriority = originalShoppingListProduct.getPriority(); if
-		 * (Tester.testing == "Y") { System.out.println("\n TESTING - currentPriority: "
-		 * + currentPriority); } // add another to the list if (currentPriority ==
-		 * lastPriority || lastPriority == -1) { if (Tester.testing == "Y") {
-		 * System.out.println("\n TESTING - adding to priorityEqualShoppingList index:"
-		 * + i); } priorityEqualShoppingList.addItem(originalShoppingListProduct);
-		 * lastPriority = currentPriority; i++; } // process the same priority list (i
-		 * for the original list is one greater) else { if (Tester.testing == "Y") {
-		 * System.out.println("\n TESTING - beginning processing"); } // do this until
-		 * no more updates are completed do { // process the list 1 time for (int i2 =
-		 * 0; i < priorityEqualShoppingList.getShoppingListArray().size(); i2++) {
-		 * 
-		 * ShoppingListProduct newShoppingListProduct = (ShoppingListProduct)
-		 * priorityEqualShoppingList .getShoppingListArray().get(i2); if (Tester.testing
-		 * == "Y") { System.out.println("\n TESTING - processing index:" + i2); }
-		 * 
-		 * if (newShoppingListProduct.getPrice() <= bankAccount &&
-		 * newShoppingListProduct.getQuantity() > 0) // priorityEqualShoppingList will
-		 * be the remainder - remove 1 { if (Tester.testing == "Y") {
-		 * System.out.println("\n TESTING - bought one at index:" + i2); } bankAccount =
-		 * bankAccount - newShoppingListProduct.getPrice(); // newShoppingList will be
-		 * the remainder
-		 * newShoppingListProduct.setQuantity(newShoppingListProduct.getQuantity() - 1);
-		 * // originalShoppingList will be the amount purchased updateMade = true; } } }
-		 * while (updateMade == true); // we are done now and need to update the
-		 * original list // start with i-length of priorityEqualShoppingListLength //
-		 * example if only 1 record then i = 1 and size = 1 so start with 0 and 1 is not
-		 * // less than 1 so exit on step 2 - perfect for (int i3 = 0; i3 <
-		 * priorityEqualShoppingList.getShoppingListArray().size(); i3++) { if
-		 * (Tester.testing == "Y") { System.out.println("\n TESTING - starting to update
-		 * originals:" + i3); } originalShoppingListProduct = (ShoppingListProduct)
-		 * user.getShoppingList().getShoppingListArray() .get(i -
-		 * priorityEqualShoppingList.getShoppingListArray().size() + i3);
-		 * ShoppingListProduct newShoppingListProduct = (ShoppingListProduct)
-		 * priorityEqualShoppingList .getShoppingListArray().get(i3); // if all of the
-		 * new shopping list product was purchased then set to 0 if
-		 * (newShoppingListProduct.getQuantity() == 0) {
-		 * originalShoppingListProduct.setPurchased(true);
-		 * originalShoppingListProduct.setPurchasedNow(true); } else { int
-		 * purchasedAmount = originalShoppingListProduct.getQuantity() -
-		 * newShoppingListProduct.getQuantity();
-		 * originalShoppingListProduct.setQuantity(purchasedAmount); // add the
-		 * remainder user.getShoppingList().addItem(newShoppingListProduct); }
-		 * 
-		 * } // setting lastPriority to -1 will process the current i value that ignored
-		 * // previously lastPriority = -1; } } while (i <
-		 * user.getShoppingList().getShoppingListArray().size());
-		 * 
-		 * this.shoppingListInterfaceDisplayList(user, true);
-		 * 
-		 * }
-		 */
+		}
 	}
 
 	public void shoppingListInterfaceSaveText(Person user) {
@@ -695,11 +527,6 @@ public class ApplicationInterface {
 			outputStream.println("Product                           Quantity    Priority    Price         Purchased");
 			outputStream.println("------------------------------    --------    --------    ----------    ----------");
 
-			if (Tester.testing == "Y") {
-				System.out.println("\n TESTING - shopping list array size: "
-						+ user.getShoppingList().getShoppingListArray().size() + "\n");
-			}
-
 			for (int index = 0; index < shoppingList.getShoppingListArray().size(); index++) {
 
 				shoppingListProduct = (ShoppingListProduct) shoppingList.getShoppingListArray().get(index);
@@ -708,7 +535,7 @@ public class ApplicationInterface {
 				quantity = Integer.toString(shoppingListProduct.getQuantity());
 				priority = Integer.toString(shoppingListProduct.getPriority());
 				if (shoppingListProduct.getPrice() > 0.0) {
-					price = DollarFormat.returnString(shoppingListProduct.getPrice());
+					price = HelperDollarFormat.returnString(shoppingListProduct.getPrice());
 				} else {
 					price = "";
 				}
@@ -796,6 +623,81 @@ public class ApplicationInterface {
 			spaceString = spaceString + " ";
 		}
 		return spaceString;
+	}
+
+	private int getTopPriorityGroup(Person user, int i, ArrayList<Integer> startQuantity,
+			ArrayList<Integer> currentQuantity, ArrayList<Double> price) {
+		boolean process = false;
+		i--;
+		do {
+			i++;
+			ShoppingListProduct tempShoppingListProduct = (ShoppingListProduct) user.getShoppingList()
+					.getShoppingListArray().get(i);
+			startQuantity.add(tempShoppingListProduct.getQuantity());
+			currentQuantity.add(tempShoppingListProduct.getQuantity());
+			price.add(tempShoppingListProduct.getPrice());
+
+			// if you are at the end of the list then process
+			if (i == user.getShoppingList().getShoppingListArray().size() - 1) {
+
+				process = true;
+			}
+			// if you are not at the end check next priority != current then process
+			else {
+				ShoppingListProduct nextSLP = (ShoppingListProduct) user.getShoppingList().getShoppingListArray()
+						.get(i + 1);
+				if (nextSLP.getPriority() != tempShoppingListProduct.getPriority()) {
+					process = true;
+				}
+			}
+		} while (process == false);
+		return i;
+	}
+
+	private void purchaseListItems(double bankAccount, Person user, int i, ArrayList<Integer> startQuantity,
+			ArrayList<Integer> currentQuantity, ArrayList<Double> price) {
+		// Step 3 - Purchase algo for all same priority items.
+		// 3.1. figure out what you are buying
+		boolean purchased = false;
+		do {
+			// keep on doing this until nothing is purchased after checking all items
+			for (int i2 = 0; i2 < startQuantity.size(); i2++) {
+				purchased = false;
+				if (price.get(i2) <= bankAccount && currentQuantity.get(i2) > 0) {
+					// buy one
+					currentQuantity.set(i2, currentQuantity.get(i2) - 1);
+					bankAccount = bankAccount - price.get(i2);
+					purchased = true;
+				}
+			}
+		} while (purchased == true);
+	}
+
+	private void updateShoppingList(Person user, int i, ArrayList<Integer> startQuantity,
+			ArrayList<Integer> currentQuantity) {
+
+		// 3.2. update the shopping list for what you purchased
+		for (int i3 = 0; i3 < startQuantity.size(); i3++) {
+
+			ShoppingListProduct tempShoppingListProduct = (ShoppingListProduct) user.getShoppingList()
+					.getShoppingListArray().get(i + i3 - startQuantity.size() + 1);
+
+			if (currentQuantity.get(i3) == 0) {
+				// everything was purchased
+				tempShoppingListProduct.setPurchased(true);
+			} else if (currentQuantity.get(i3) == startQuantity.get(i3)) {
+				// nothing was purchased
+			} else {
+
+				// partial - split out remainder and update list for purchased piece
+				// 1. split out the unpurchased piece
+				user.getShoppingList().addItem(tempShoppingListProduct.getProduct(), currentQuantity.get(i3),
+						tempShoppingListProduct.getUnits(), tempShoppingListProduct.getPriority(), false);
+				// 2. update the purchased piece
+				tempShoppingListProduct.setQuantity(startQuantity.get(i3) - currentQuantity.get(i3));
+				tempShoppingListProduct.setPurchased(true);
+			}
+		}
 	}
 
 }

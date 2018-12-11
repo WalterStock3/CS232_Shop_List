@@ -64,19 +64,18 @@ public class ShoppingList extends ListBase implements Serializable {
 
 	public void addItem(Product product, int itemQuantity, String units, int itemPriority) {
 
-		if (Tester.testing == "Y") {
-			System.out.println(
-					"\nTESTING - About to add an item to the shopping list by creating a new shopping list item.\n");
-		}
-
 		ShoppingListProduct shoppingListProduct = new ShoppingListProduct(product, itemQuantity, units, itemPriority);
-
-		if (Tester.testing == "Y") {
-			System.out.println("\nTESTING - shoppingListProduct created: \n" + shoppingListProduct.toString() + "\n");
-		}
 
 		this.shoppingListArray.add(shoppingListProduct);
 	}
+
+	public void addItem(Product product, int itemQuantity, String units, int itemPriority, boolean purchased) {
+
+		ShoppingListProduct shoppingListProduct = new ShoppingListProduct(product, itemQuantity, units, itemPriority, purchased);
+
+		this.shoppingListArray.add(shoppingListProduct);
+	}
+
 
 	public void removeItem(String productName, int productPriority) {
 		int itemLocation = this.getProductLocation(productName, productPriority);

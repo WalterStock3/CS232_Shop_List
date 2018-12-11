@@ -1,5 +1,5 @@
 
-public class DollarFormat {
+public class HelperDollarFormat {
 	/**
 	 * Displays amount in dollars and cents notation. Rounds after two decimal
 	 * places. Does not advance to the next line after output.

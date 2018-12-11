@@ -13,7 +13,6 @@ public class ShoppingListProduct extends ListItemBase implements Purchasable, Se
 	private String units = "NoUnitsYet";
 	private int priority = -1;
 	private double price = -1.0;
-	private boolean purchasedNow = false;
 	private boolean purchased = false;
 
 	// constructors
@@ -24,6 +23,16 @@ public class ShoppingListProduct extends ListItemBase implements Purchasable, Se
 		this.units = units;
 		this.priority = priority;
 	}
+
+	public ShoppingListProduct(Product product, int quantity, String units, int priority, boolean purchased) {
+		this.setListItemID();
+		this.product = product;
+		this.quantity = quantity;
+		this.units = units;
+		this.priority = priority;
+		this.purchased = purchased;
+	}
+	
 
 	// setters
 	public void setListItemID() {
@@ -46,9 +55,6 @@ public class ShoppingListProduct extends ListItemBase implements Purchasable, Se
 		this.price = price;
 	}
 
-	public void setPurchasedNow(boolean purchasedNow) {
-		this.purchasedNow = purchasedNow;
-	}
 
 	public void setPurchased(boolean purchased) {
 		this.purchased = purchased;
@@ -79,9 +85,6 @@ public class ShoppingListProduct extends ListItemBase implements Purchasable, Se
 		return this.price;
 	}
 
-	public boolean getPurchasedNow() {
-		return this.purchasedNow;
-	}
 
 	public boolean getPurchased() {
 		return this.purchased;
